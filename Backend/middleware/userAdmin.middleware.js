@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const Admin = require("../model/Admin.model");
 const User = require("../model/User.model");
 
+let checkAuth;
 const userAdminAuth = async (req, res, next) => {
     try {
         const authorization = req.headers.authorization;
@@ -27,6 +28,7 @@ const userAdminAuth = async (req, res, next) => {
             next();
         }
     } catch (error) {
+        console.log(error);
         res.status(401).send({ Error: `Unauthorized : ${error}` })
     }
 }

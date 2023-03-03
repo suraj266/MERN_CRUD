@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken")
-const User = require("../model/User.model");
+const Admin = require("../model/Admin.model");
 
 const adminAuth = async (req, res, next) => {
     try {
@@ -7,18 +7,19 @@ const adminAuth = async (req, res, next) => {
         if (authorization && authorization.startsWith("Bearer")) {
             const token = authorization.split(" ")[1];
             const { _id } = jwt.verify(token, process.env.SECRET_KEY);
-            const rootUser = await User.findOne({ _id: _id });
+            const rootAdmin = await Admin.findOne({ _id: _id });
 
-            if (!rootUser)
-                throw new Error('User Not Found...')
+            if (!rootAdmin)
+                throw new Error('Admin Not Found...')
 
             req.token = token;
-            req.rootUser = rootUser;
-            req.userId = rootUser._id;
-            checkAuth = 'user'
+            req.rootAdmin = rootAdmin;
+            req.adminId = rootAdmin._id;
+            checkAuth = 'Admin'
             next();
         }
     } catch (error) {
+        console.log(error);
         res.status(401).send({ Error: `Unauthorized : ${error}` })
     }
 }

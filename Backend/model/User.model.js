@@ -1,17 +1,16 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const dotenv = require('dotenv');
-const { required } = require('joi');
 dotenv.config({ path: './config.env' });
 
 
 const Schema = new mongoose.Schema({
     name: { type: String, required: true },
-    email: { type: String, required: true },
-    contact: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    contact: { type: String, required: true, match: /^[0-9]{10}$/ },
     gender: { type: String, required: true },
     status: { type: String, default: "inactive", required: true },
-    hobby: [{ type: String }],
+    hobby: { type: Array },
     password: { type: String, required: true },
     city: { type: String, required: true },
     state: { type: String, required: true },
