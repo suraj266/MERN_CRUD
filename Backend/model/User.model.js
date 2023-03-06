@@ -10,6 +10,7 @@ const Schema = new mongoose.Schema({
     contact: { type: String, required: true, match: /^[0-9]{10}$/ },
     gender: { type: String, required: true },
     status: { type: String, default: "inactive", required: true },
+    area: { type: String, required: true },
     hobby: { type: Array },
     password: { type: String, required: true },
     city: { type: String, required: true },

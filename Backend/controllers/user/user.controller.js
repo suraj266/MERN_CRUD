@@ -1,10 +1,10 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const nodemailer = require('nodemailer');
 const joi = require('joi');
 const dotenv = require('dotenv');
 dotenv.config({ path: './config.env' });
-const User = require('../../model/User.model')
+const User = require('../../model/User.model');
+const Mailing = require('../../services/Mailing');
 
 module.exports.Register = async (req, res) => {
     try {
@@ -13,8 +13,8 @@ module.exports.Register = async (req, res) => {
             email: joi.string().required(),
             contact: joi.number().required(),
             gender: joi.string().required(),
-            hobby: joi.string().required(),
-            address: joi.string().required(),
+            hobby: joi.array().required(),
+            area: joi.string().required(),
             city: joi.string().required(),
             state: joi.string().required(),
             password: joi.string().required()
@@ -25,45 +25,26 @@ module.exports.Register = async (req, res) => {
             contact: req.body.contact,
             gender: req.body.gender,
             hobby: req.body.hobby,
-            address: req.body.address,
+            area: req.body.address,
             city: req.body.city,
             state: req.body.state,
             password: req.body.password
         })
         if (!error) {
+            const checkUser = await User.findOne({ email: value.email })
+            if (checkUser) {
+                res.status(409).json({ status: false, Error: `User Already Exist` });
+            }
             const user = new User(value);
             await user.save();
 
-            const transporter = nodemailer.createTransport({
-                host: 'gmail',
-                port: 587,
-                auth: {
-                    user: 'ojhasuraj832@gmail.com',
-                    pass: 'Abcd@1234'
-                }
-            });
-            var mailOptions = {
-                from: 'ojhasuraj832@gmail.com',
-                to: `${value.email}`,
-                subject: "Registered successfully ✔",
-                text: "sample mail?",
-                html: "<b>you are registered successfully </b>",
-            };
-            transporter.sendMail(mailOptions, function (error, info) {
-                if (error) {
-                    console.log(error);
-                } else {
-                    console.log('Email sent: ' + info.response);
-                }
-            });
-            // console.log("Message sent: %s", info);
-            // console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+            Mailing(value.email); // Sending mail
 
             res.status(201).json({ status: true, Message: `User Registered Successfully` });
 
         } else {
             console.log("joi error : ", error);
-            res.status(400).json({ status: false, Error: `Else :  ${error}` })
+            res.status(400).json({ status: false, Error: `ELSE : ${error}` })
         }
     } catch (err) {
         res.status(400).json({ status: false, Error: `Catch : ${err}` })
@@ -100,7 +81,6 @@ module.exports.Login = async (req, res) => {
 }
 
 module.exports.List = async (req, res) => {
-    console.log(req.body);
     try {
         const schema = joi.object({
             id: joi.string(),
@@ -109,14 +89,14 @@ module.exports.List = async (req, res) => {
             id: req.body.id,
         })
         if (!error) {
-            const opts = value.id ? { _id: value.id } : null;
+            const opts = value.id ? { _id: value.id } : req.userId ? { _id: req.userId } : null;
             const data = await User.find(opts);
             res.status(200).json({ status: true, data: data })
         } else {
             res.status(400).json({ msg: "joi error : ", Error: `${error}` })
         }
     } catch (error) {
-        res.status(400).json({ msg: "Oops ! Some error Occur", Error: `${error}`, opts: opts })
+        res.status(400).json({ msg: "Oops ! Some error Occur", Error: `${error}` })
     }
 }
 
@@ -124,23 +104,23 @@ module.exports.List = async (req, res) => {
 module.exports.Update = async (req, res) => {
     try {
         const schema = joi.object({
-            id: joi.string().required(),
-            name: joi.string().required(),
-            contact: joi.number().required(),
-            gender: joi.string().required(),
-            hobby: joi.array().required(),
-            address: joi.string().required(),
-            city: joi.string().required(),
-            state: joi.string().required(),
+            id: joi.string(),
+            name: joi.string(),
+            contact: joi.number(),
+            gender: joi.string(),
+            hobby: joi.array(),
+            area: joi.string(),
+            city: joi.string(),
+            state: joi.string(),
             password: joi.string()
         })
         const { error, value } = schema.validate({
-            id: req.params.id,
+            id: req.body.id,
             name: req.body.name,
             contact: req.body.contact,
             gender: req.body.gender,
             hobby: req.body.hobby,
-            address: req.body.address,
+            area: req.body.area,
             city: req.body.city,
             state: req.body.state,
             password: req.body.password
@@ -151,14 +131,14 @@ module.exports.Update = async (req, res) => {
                 contact: `${value.contact}`,
                 gender: `${value.gender}`,
                 hobby: `${value.hobby}`,
-                address: `${value.address}`,
+                area: `${value.area}`,
                 city: `${value.city}`,
                 state: `${value.state}`,
                 password: `${value.password}`,
             },
         };
         if (!error) {
-            const user = await User.updateOne({ _id: value.id }, updateDoc, { upsert: true });
+            const user = await User.updateOne({ _id: value.id ? value.id : req.userId && req.userId }, updateDoc, { upsert: true });
             console.log(user);
             res.status(201).json({ status: true, Message: "User update successfully " });
         } else {

@@ -1,13 +1,9 @@
 import './App.css';
-import AppBarView from './component/navbar/AppBarView';
-import Home from './pages/Home';
+import Routing from './component/router/Routing';
 
 function App() {
   return (
-    <>
-      <AppBarView />
-      <Home />
-    </>
+    <Routing />
   );
 }
 
