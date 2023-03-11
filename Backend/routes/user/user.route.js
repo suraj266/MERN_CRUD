@@ -9,6 +9,9 @@ router.route("/Login").post(Controller.Login); // Login user
 router.route("/List").get(userAdmin, Controller.List); // Listing of users by Id and without Id both
 router.route("/Update").put(userAdmin, Controller.Update); // Update user data
 router.route("/Delete/:id").put(userAuth, Controller.Delete); // Delete (Soft Delete) user data
+router.route("/sendOTP").post(Controller.sendOTP); // Delete (Soft Delete) user data
+router.route("/verifyOtp").post(Controller.VerifyOtp); // Delete (Soft Delete) user data
+router.route("/changePassword").post(Controller.changePassword); // Delete (Soft Delete) user data
 
 module.exports = router;
 

@@ -4,6 +4,8 @@ import Form from 'react-bootstrap/Form';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import { Image } from 'react-bootstrap';
+
 import InputGroup from 'react-bootstrap/InputGroup';
 import MyVerticallyCenteredModal from '../component/modal/MyVerticallyCenteredModal';
 import { myProfile, updateProfile } from '../component/services/context';
@@ -19,10 +21,11 @@ function MyProfile(props) {
     const [area, setArea] = useState('');
     const [city, setCity] = useState('');
     const [state, setState] = useState('');
-
-
+    const [file, setFile] = useState('');
+    const [image, setImage] = useState('');
     const [addHobby, setAddHobby] = useState('');
     const [hobby, setHobby] = useState([]);
+
 
     const handleAdd = () => {
         setHobby([...hobby, addHobby]);
@@ -33,14 +36,29 @@ function MyProfile(props) {
         setHobby(newHobby)
     }
     const handleUpdate = () => {
-        updateProfile(name, email, contact, gender, area, hobby, city, state, navigate);
+        updateProfile(name, email, contact, gender, area, hobby, city, state, image, navigate);
+    }
+
+    const previewFiles = (file) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onloadend = () => {
+            setImage(reader.result);
+        }
+    }
+
+    const handleImage = (e) => {
+        e.preventDefault();
+        const file = e.target.files[0];
+        setFile(file);
+        previewFiles(file);
     }
 
     useEffect(() => {
         if (localStorage.getItem('token')) {
 
             myProfile().then((res) => {
-                const { name, email, contact, gender, hobby, area, city, state } = res[0]
+                const { name, email, contact, gender, hobby, area, city, state, image } = res[0]
                 setName(name);
                 setEmail(email);
                 setContact(contact);
@@ -49,6 +67,7 @@ function MyProfile(props) {
                 setCity(city);
                 setState(state);
                 setHobby(hobby);
+                setImage(image)
             })
         }
     }, [props.modalShow]);
@@ -60,52 +79,96 @@ function MyProfile(props) {
             <Container>
                 <Row style={{ marginBottom: '.5em', }}>
                     <Col sm={6}>
-                        <Form.Control type="text" name='name' value={name} onChange={(e) => setName(e.target.value)} placeholder="Enter Name" />
+                        {image && (<>
+                            {/* <div className="profile-image">
+                                <Image src={image} alt={image} fluid roundedCircle />
+                            </div> */}
+                            <img src={image} alt="Selected" style={{ width: "100%", height: "260px" }} />
+                        </>
+                        )}
                     </Col>
                     <Col sm={6}>
-                        <Form.Control type="email" name='email' value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Enter Email" />
+                        <Row style={{ marginBottom: '.5em', }}>
+                            <Col sm={12}>
+                                <Form.Control type="text" name='name' value={name} onChange={(e) => setName(e.target.value)} placeholder="Enter Name" />
+                            </Col>
+                        </Row>
+                        <Row style={{ marginBottom: '.5em', }}>
+                            <Col sm={12}>
+                                <Form.Control type="email" name='email' value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Enter Email" disabled />
+                            </Col>
+                        </Row>
+                        <Row style={{ marginBottom: '.5em', }}>
+                            <Col sm={12}>
+                                <Form.Control type="number" name='contact' value={contact} onChange={(e) => setContact(e.target.value)} placeholder="Enter Contact" />
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col sm={12}>
+                                <div key={`inline-radio`} className="mb-3">
+                                    <Form.Check
+                                        inline
+                                        label="Male"
+                                        name="gender"
+                                        value='male'
+                                        type={'radio'}
+                                        checked={gender === "male"}
+                                        id={`inline-${'radio'}-1`}
+                                        onChange={(e) => setGender(e.target.value)}
+                                    />
+                                    <Form.Check
+                                        inline
+                                        label="Female"
+                                        value='female'
+                                        name="gender"
+                                        type={'radio'}
+                                        checked={gender === "female"}
+                                        id={`inline-${'radio'}-2`}
+                                        onChange={(e) => setGender(e.target.value)}
+                                    />
+                                    <Form.Check
+                                        inline
+                                        label="Other"
+                                        name="gender"
+                                        value='other'
+                                        type={'radio'}
+                                        checked={gender === "other"}
+                                        id={`inline-${'radio'}-3`}
+                                        onChange={(e) => setGender(e.target.value)}
+                                    />
+                                </div>
+                            </Col>
+                        </Row>
+                        <Row style={{ marginBottom: '.5em', }}>
+                            <Col sm={12}>
+                                <Form.Control type="text" name='area' value={area} onChange={(e) => setArea(e.target.value)} placeholder="Enter Your Area" />
+                            </Col>
+                        </Row>
+                        <Row style={{ marginBottom: '.5em', }}>
+                            <Col sm={12}>
+                                <Form.Select name='city' value={city} onChange={(e) => setCity(e.target.value)} aria-label="Select City">
+                                    <option>Select City</option>
+                                    <option value="Gwalior">Gwalior</option>
+                                    <option value="Indore">Indore</option>
+                                    <option value="Bhopal">Bhopal</option>
+                                </Form.Select>
+                            </Col>
+                        </Row>
                     </Col>
                 </Row>
                 <Row style={{ marginBottom: '.5em', }}>
                     <Col sm={6}>
-                        <Form.Control type="number" name='contact' value={contact} onChange={(e) => setContact(e.target.value)} placeholder="Enter Contact" />
+                        <Form.Control type="file" name='file' onChange={(e) => handleImage(e)} placeholder="upload Image" accept='image/png, image/jpeg, image/jpg' />
                     </Col>
                     <Col sm={6}>
-                        <div key={`inline-radio`} className="mb-3">
-                            <Form.Check
-                                inline
-                                label="Male"
-                                name="gender"
-                                value='male'
-                                type={'radio'}
-                                checked={gender === "male"}
-                                id={`inline-${'radio'}-1`}
-                                onChange={(e) => setGender(e.target.value)}
-                            />
-                            <Form.Check
-                                inline
-                                label="Femail"
-                                value='female'
-                                name="gender"
-                                type={'radio'}
-                                checked={gender === "female"}
-                                id={`inline-${'radio'}-2`}
-                                onChange={(e) => setGender(e.target.value)}
-                            />
-                            <Form.Check
-                                inline
-                                label="Other"
-                                name="gender"
-                                value='other'
-                                type={'radio'}
-                                checked={gender === "other"}
-                                id={`inline-${'radio'}-3`}
-                                onChange={(e) => setGender(e.target.value)}
-                            />
-                        </div>
+                        <Form.Select name='state' value={state} onChange={(e) => setState(e.target.value)} aria-label="Select State">
+                            <option>Select City</option>
+                            <option value="mp">MP</option>
+                            <option value="up">UP</option>
+                            <option value="Gujrat">Gujrat</option>
+                        </Form.Select>
                     </Col>
                 </Row>
-
                 <Row style={{ marginBottom: '.5em', }}>
                     <Col sm={6}>
                         <InputGroup>
@@ -121,46 +184,37 @@ function MyProfile(props) {
                         </InputGroup>
                     </Col>
                     <Col sm={6}>
-
-                        <span>
+                        <Row style={{ marginBottom: '.5em', }}>
                             {hobby.length ?
                                 hobby.map((item, index) => {
-                                    return <InputGroup key={index}>
-                                        <Form.Control
-                                            disabled
-                                            value={item}
-                                            type="text"
-                                            aria-label="Input group example"
-                                            aria-describedby="btnGroupAddon"
-                                        />
-                                        <Button variant="secondary" onClick={() => handleRemove(index)}>X</Button>
-                                    </InputGroup>
+                                    return <Col sm={6} key={index} style={{ marginBottom: '.5em', }}>
+                                        <InputGroup>
+                                            <Form.Control
+                                                disabled
+                                                value={item}
+                                                type="text"
+                                                aria-label="Input group example"
+                                                aria-describedby="btnGroupAddon"
+                                            />
+                                            <Button variant="secondary" onClick={() => handleRemove(index)}>X</Button>
+                                        </InputGroup>
+                                    </Col>
                                 })
                                 : "No Hobby added"
                             }
-                        </span>
+                        </Row>
+
+
                     </Col>
                 </Row>
 
+
                 <Row style={{ marginBottom: '.5em', }}>
                     <Col sm={6}>
-                        <Form.Control type="text" name='area' value={area} onChange={(e) => setArea(e.target.value)} placeholder="Enter Your Area" />
+
                     </Col>
-                    <Col sm={3}>
-                        <Form.Select name='city' value={city} onChange={(e) => setCity(e.target.value)} aria-label="Select City">
-                            <option>Select City</option>
-                            <option value="Gwalior">Gwalior</option>
-                            <option value="Indore">Indore</option>
-                            <option value="Bhopal">Bhopal</option>
-                        </Form.Select>
-                    </Col>
-                    <Col sm={3}>
-                        <Form.Select name='state' value={state} onChange={(e) => setState(e.target.value)} aria-label="Select State">
-                            <option>Select City</option>
-                            <option value="mp">MP</option>
-                            <option value="up">UP</option>
-                            <option value="Gujrat">Gujrat</option>
-                        </Form.Select>
+                    <Col sm={6}>
+
                     </Col>
                 </Row>
                 <Row style={{ marginBottom: '.5em', }}>

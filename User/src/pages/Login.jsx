@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import Nav from 'react-bootstrap/Nav';
 import { login } from '../component/services/context';
 import MyVerticallyCenteredModal from '../component/modal/MyVerticallyCenteredModal';
+import ForgotPassword from './ForgotPassword';
 
 
 function Login(props) {
@@ -11,9 +13,16 @@ function Login(props) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [open, setOpen] = useState()
+    const [forgot, setForgot] = React.useState(false);
+
     const handleLogin = () => {
         login(email, password, navigate);
         setOpen(false)
+    }
+
+    const handleForgot = () => {
+        setOpen(false)
+        setForgot(true)
     }
 
     const Body = <>
@@ -31,10 +40,20 @@ function Login(props) {
                 </Button>
             </div>
         </Form>
+        {/* <br /> */}
+        <hr />
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: "space-between", padding: '0px 10px 0px 10px' }}>
+            <div>
+                <Nav.Link style={{ color: 'blue' }} as={Link} to="/contact">Create New Account</Nav.Link>
+            </div>
+            <div>
+                <Nav.Link style={{ color: 'blue' }} onClick={() => handleForgot()}>Forgot Password</Nav.Link>
+            </div>
+        </div>
 
     </>
 
-    return (
+    return (<>
         <MyVerticallyCenteredModal
             show={open === false ? open : props.modalShow}
             onHide={props.onHide}
@@ -42,6 +61,11 @@ function Login(props) {
             body={Body}
             size={props.size}
         />
+        <ForgotPassword
+            modalShow={forgot}
+            onHide={() => setForgot(false)}
+        />
+    </>
     );
 }
 

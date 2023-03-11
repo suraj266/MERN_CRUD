@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const dotenv = require('dotenv');
+const { string } = require('joi');
 dotenv.config({ path: './config.env' });
 
 
@@ -12,6 +13,15 @@ const Schema = new mongoose.Schema({
     status: { type: String, default: "inactive", required: true },
     area: { type: String, required: true },
     hobby: { type: Array },
+    image: {
+        public_id: {
+            type: String,
+        },
+        url: {
+            type: String,
+        }
+    },
+    otp: { type: Number },
     password: { type: String, required: true },
     city: { type: String, required: true },
     state: { type: String, required: true },
@@ -27,6 +37,13 @@ Schema.pre('save', async function (next) {
     }
     next();
 });
+
+// Schema.pre('updateOne', async function (next) {
+//     if (this.isModified('password')) {
+//         this.password = await bcrypt.hash(this.password, 12);
+//     }
+//     next();
+// });
 
 // ****** End ******
 

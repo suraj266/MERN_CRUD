@@ -5,6 +5,8 @@ const dotenv = require('dotenv');
 dotenv.config({ path: './config.env' });
 const User = require('../../model/User.model');
 const Mailing = require('../../services/Mailing');
+const sendOtp = require('../../services/sendOtp');
+const uploadImage = require('../../services/cloudinary');
 
 module.exports.Register = async (req, res) => {
     try {
@@ -110,9 +112,10 @@ module.exports.Update = async (req, res) => {
             gender: joi.string(),
             hobby: joi.array(),
             area: joi.string(),
+            image: joi.string(),
             city: joi.string(),
             state: joi.string(),
-            password: joi.string()
+            // password: joi.string()
         })
         const { error, value } = schema.validate({
             id: req.body.id,
@@ -122,24 +125,25 @@ module.exports.Update = async (req, res) => {
             hobby: req.body.hobby,
             area: req.body.area,
             city: req.body.city,
+            image: req.body.image,
             state: req.body.state,
-            password: req.body.password
         })
+        const image = await uploadImage(value.image)
         const updateDoc = {
             $set: {
                 name: `${value.name}`,
                 contact: `${value.contact}`,
                 gender: `${value.gender}`,
-                hobby: `${value.hobby}`,
+                hobby: value.hobby,
                 area: `${value.area}`,
                 city: `${value.city}`,
+                image: `${image}`,
                 state: `${value.state}`,
-                password: `${value.password}`,
             },
         };
         if (!error) {
+
             const user = await User.updateOne({ _id: value.id ? value.id : req.userId && req.userId }, updateDoc, { upsert: true });
-            console.log(user);
             res.status(201).json({ status: true, Message: "User update successfully " });
         } else {
             console.log("joi error : ", error);
@@ -169,6 +173,109 @@ module.exports.Delete = async (req, res) => {
             const user = await User.updateOne({ _id: value.id }, updateDoc, { upsert: true });
             console.log(user);
             res.status(201).json({ status: true, Message: "User deleted successfully " });
+        } else {
+            console.log("joi error : ", error);
+            res.status(400).json({ status: false, Error: `Else :  ${error}` })
+        }
+    } catch (err) {
+        res.status(400).json({ status: false, Error: `Catch : ${err}` })
+    }
+}
+
+module.exports.sendOTP = async (req, res) => {
+    try {
+        const schema = joi.object({
+            email: joi.string().required(),
+        })
+        const { error, value } = schema.validate({
+            email: req.body.email,
+        })
+        function generateOTP() {
+            const otp = Math.floor(100000 + Math.random() * 900000).toString();
+            return otp;
+        }
+        const user = await User.findOne({ email: value.email });
+        if (!user) {
+            res.status(404).json({ status: false, Error: `User Not Found` })
+        }
+        const otp = generateOTP();
+        sendOtp(value.email, otp);
+        const updateDoc = {
+            $set: {
+                otp: otp
+            },
+        };
+        if (!error) {
+            const user = await User.updateOne({ email: value.email }, updateDoc, { upsert: true });
+            console.log(user);
+            res.status(201).json({ status: true, Message: "OTP Sent To Your Register Email." });
+        } else {
+            res.status(400).json({ status: false, Error: `Else :  ${error}` })
+        }
+    } catch (err) {
+        res.status(400).json({ status: false, Error: `Catch : ${err}` })
+    }
+}
+
+
+module.exports.VerifyOtp = async (req, res) => {
+    try {
+        const schema = joi.object({
+            email: joi.string().required(),
+            otp: joi.number().required(),
+        })
+        const { error, value } = schema.validate({
+            email: req.body.email,
+            otp: req.body.otp,
+        })
+        if (!error) {
+            const user = await User.findOne({ email: value.email });
+            console.log(user);
+            if (user.otp === value.otp) {
+                req.passwordEmail = value.email;
+                const updateDoc = {
+                    $set: {
+                        otp: 0
+                    },
+                };
+                await User.updateOne({ email: value.email }, updateDoc, { upsert: true });
+                res.status(200).json({ status: true, Message: "OTP Verified" });
+            } else {
+                res.status(404).json({ status: false, Error: `Invalid OTP` })
+            }
+        } else {
+            console.log("joi error : ", error);
+            res.status(400).json({ status: false, Error: `Else :  ${error}` })
+        }
+    } catch (err) {
+        res.status(400).json({ status: false, Error: `Catch : ${err}` })
+    }
+}
+
+module.exports.changePassword = async (req, res) => {
+    try {
+        const schema = joi.object({
+            email: joi.string().required(),
+            password: joi.string().required(),
+        })
+        const { error, value } = schema.validate({
+            email: req.body.email,
+            password: req.body.password,
+        })
+        const user = await User.findOne({ email: value.email });
+        if (!user) {
+            res.status(404).json({ status: false, Error: `User Not Found` })
+        }
+        const hashPassword = await bcrypt.hash(value.password, 12);
+        const updateDoc = {
+            $set: {
+                password: hashPassword
+            },
+        };
+        if (!error) {
+            const user = await User.updateOne({ email: value.email }, updateDoc, { upsert: true });
+            console.log(user);
+            res.status(201).json({ status: true, Message: "OTP Sent To Your Register successfully " });
         } else {
             console.log("joi error : ", error);
             res.status(400).json({ status: false, Error: `Else :  ${error} ${value._id}` })

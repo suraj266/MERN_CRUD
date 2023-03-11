@@ -10,8 +10,8 @@ const User = require("./routes/user/user.route")
 const Admin = require("./routes/admin/Admin.route")
 
 server.use(cors());
-server.use(express.json());
-server.use(express.urlencoded({ extended: false }));
+server.use(express.json({ limit: '50mb' }));
+server.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 ///////////////////  API Routers ///////////////////
 server.use("/api/user", User);
