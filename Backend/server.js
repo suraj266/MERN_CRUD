@@ -5,9 +5,9 @@ const server = express();
 
 dotenv.config({ path: './config.env' });
 const PORT = process.env.PORT;
-require('./connection/connection');
-const User = require("./routes/user/user.route")
-const Admin = require("./routes/admin/Admin.route")
+require('./src/utility/connection/connection');
+const User = require("./src/routes/user/User.route")
+const Admin = require("./src/routes/admin/Admin.route")
 
 server.use(cors());
 server.use(express.json({ limit: '50mb' }));
