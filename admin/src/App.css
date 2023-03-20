@@ -32,7 +32,32 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
+}
+
+.login-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  background: linear-gradient(to top, #80A8BF, #C7D8E2);
+  background-repeat: no-repeat;
+}
+
+.sidebar-hover {
+  color: '#FE5931';
+  width: 13em;
+}
+
+.sidebar-hover:hover {
+  /* border: 1px solid #FE5931; */
+  background-color: #FE5931;
+}
+
+.active {
+  background-color: #FE5931;
 }

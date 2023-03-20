@@ -41,27 +41,30 @@ module.exports.Register = async (req, res) => {
 module.exports.Login = async (req, res) => {
     try {
         const schema = joi.object({
-            email: joi.string().required(),
+            email: joi.string().email({ minDomainSegments: 2 }).trim().normalize().required(),
             password: joi.string().required()
         })
         const { error, value } = schema.validate({
             email: req.body.email,
             password: req.body.password
         })
-        if (!error) {
-            const checkAdmin = await Admin.findOne({ email: value.email })
-            if (checkAdmin) {
-                const isMatch = await bcrypt.compare(value.password, checkAdmin.password);
-                if (isMatch) {
-                    const token = jwt.sign({ _id: checkAdmin._id }, process.env.SECRET_KEY);
-                    res.status(200).json({ status: true, token: token })
-                } else {
-                    res.status(400).json({ status: false, Error: "Invalid Email or Password" });
-                }
-            } else {
-                res.status(400).json({ status: false, Error: "Invalid Email or Password" });
-            }
+        if (error) {
+            res.status(400).json({ status: false, Error: `${error}` });
+            return;
         }
+        const checkAdmin = await Admin.findOne({ email: value.email });
+        if (!checkAdmin) {
+            res.status(400).json({ status: false, Error: "Invalid Email or Password" });
+            return;
+        }
+        const isMatch = await bcrypt.compare(value.password, checkAdmin.password);
+        if (!isMatch) {
+            res.status(400).json({ status: false, Error: "Invalid Email or Password" });
+            return;
+        }
+        const token = jwt.sign({ _id: checkAdmin._id }, process.env.SECRET_KEY);
+        res.status(200).json({ status: true, token: token });
+
     } catch (error) {
         res.status(400).json({ msg: "Oops ! Some error Occur", Error: `${error}` })
     }

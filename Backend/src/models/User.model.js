@@ -13,14 +13,7 @@ const Schema = new mongoose.Schema({
     status: { type: String, default: "inactive", required: true },
     area: { type: String, required: true },
     hobby: { type: Array },
-    image: {
-        public_id: {
-            type: String,
-        },
-        url: {
-            type: String,
-        }
-    },
+    image: { type: String, },
     otp: { type: Number },
     password: { type: String, required: true },
     city: { type: String, required: true },

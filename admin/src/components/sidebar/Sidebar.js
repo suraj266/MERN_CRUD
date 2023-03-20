@@ -1,31 +1,37 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { Navbar, Nav } from 'react-bootstrap';
 import { MdDashboard, MdSupervisorAccount } from "react-icons/md"
 
-const classCSS = 'nav-link text-white fs-5 d-flex align-items-center';
+const classCSS = 'nav-link text-white fs-6 d-flex align-items-center';
 
 const Sidebar = () => {
     return (
-        <Navbar bg="info" expand="lg" className="flex-column" style={{ height: '40em' }}>
-            <Navbar.Toggle aria-controls="basic-navbar-nav" />
-            <Navbar id="basic-navbar-nav">
-                <Nav className="flex-column">
-                    <Nav.Item>
-                        <Link className={classCSS} exact to="/">
-                            <MdDashboard size={25} className='me-2' />
-                            Dashboard
-                        </Link>
-                    </Nav.Item>
-                    <Nav.Item>
-                        <Link className={classCSS} to="/user">
-                            <MdSupervisorAccount size={25} className='me-2' />
-                            User
-                        </Link>
-                    </Nav.Item>
+        <Navbar style={{ height: '92vh', display: 'inherit' }} className='overflow-hidden' collapseOnSelect expand="lg" bg='dark' variant="dark">
+            <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+            <Navbar.Collapse id="responsive-navbar-nav">
+                <Nav className="mr-auto">
+                    <ul style={{ listStyleType: 'none' }}>
+                        <li style={{ marginBottom: '8px' }}>
+                            <Nav.Item>
+                                <NavLink className={`sidebar-hover ${classCSS}`} exact='true' to="/">
+                                    <MdDashboard size={20} className='me-2' />
+                                    Dashboard
+                                </NavLink>
+                            </Nav.Item>
+                        </li>
+                        <li>
+                            <Nav.Item>
+                                <NavLink className={`sidebar-hover ${classCSS}`} exact='true' to="/user">
+                                    <MdSupervisorAccount size={20} className='me-2' />
+                                    User
+                                </NavLink>
+                            </Nav.Item>
+                        </li>
+                    </ul>
                 </Nav>
-            </Navbar>
-        </Navbar>
+            </Navbar.Collapse>
+        </Navbar >
     );
 };
 
