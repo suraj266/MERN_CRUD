@@ -2,8 +2,6 @@ const cloudinary = require('cloudinary').v2;
 const dotenv = require('dotenv');
 dotenv.config({ path: './config.env' });
 
-console.log(process.env.CLOUD_NAME, "__", process.env.API_KEY, "__", process.env.API_SECRET);
-
 const uploadImage = async (image) => {
   // Configuration 
   cloudinary.config({
