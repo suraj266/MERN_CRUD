@@ -15,6 +15,10 @@ router.route("/changePassword").post(Controller.changePassword); // Change Passw
 module.exports = router;
 
 
-// Feture & Option
-// multer
-// cloudnary
+
+//////////// there are two types to create routes ////////////
+
+//  1 -  router.get("/List", userAdmin, Controller.List);
+//  2 -  router.route("/List").get(userAdmin, Controller.List);
+
+//////////////////////////////////////////////////////////////

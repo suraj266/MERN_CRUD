@@ -19,7 +19,7 @@ const userAdminAuth = async (req, res, next) => {
                 req.userId = rootUser._id;
                 checkAuth = 'user'
             }
-            else {
+            if (rootAdmin) {
                 req.token = token;
                 req.rootAdmin = rootAdmin;
                 req.adminId = rootAdmin._id;
