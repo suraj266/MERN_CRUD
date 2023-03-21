@@ -10,7 +10,7 @@ function sendOtp(to, otp) {
         },
         host: 'smtp.gmail.com'
     });
-    var mailOptions = {
+    let mailOptions = {
         from: 'ojhasuraj832@gmail.com',
         to: `${to}`,
         subject: "OTP verification ✔",

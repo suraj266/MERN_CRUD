@@ -5,8 +5,8 @@ const dotenv = require('dotenv');
 dotenv.config({ path: './config.env' });
 const User = require('../../models/User.model');
 const Mailing = require('../../utility/Mailing');
-const sendOtp = require('../../utility/sendOtp');
-const uploadImage = require('../../utility/cloudinary');
+const sendOtp = require('../../utility/SendOtp');
+const uploadImage = require('../../utility/Cloudinary');
 
 module.exports.Register = async (req, res) => {
     try {
