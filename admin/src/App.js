@@ -1,6 +1,6 @@
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Route, BrowserRouter as Router, Routes, Outlet, Navigate } from 'react-router-dom'
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom'
 import Login from './views/login/Login';
 import PrivateRoutes from './components/layout/PrivateRoutes';
 import Layout from './components/layout/Layout';

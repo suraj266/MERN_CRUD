@@ -143,7 +143,7 @@ module.exports.Update = async (req, res) => {
         };
         if (!error) {
 
-            const user = await User.updateOne({ _id: value.id ? value.id : req.userId && req.userId }, updateDoc, { upsert: true });
+            await User.updateOne({ _id: value.id ? value.id : req.userId && req.userId }, updateDoc, { upsert: true });
             res.status(201).json({ status: true, Message: "User update successfully " });
         } else {
             console.log("joi error : ", error);
