@@ -3,11 +3,11 @@ import { NavLink } from 'react-router-dom';
 import { Navbar, Nav } from 'react-bootstrap';
 import { MdDashboard, MdSupervisorAccount } from "react-icons/md"
 
-const classCSS = 'nav-link text-white fs-6 d-flex align-items-center';
+const classCSS = 'nav-link fs-6 d-flex align-items-center';
 
 const Sidebar = () => {
     return (
-        <Navbar style={{ height: '92vh', display: 'inherit' }} className='overflow-hidden' collapseOnSelect expand="lg" bg='dark' variant="dark">
+        <Navbar style={{ height: '92vh', display: 'inherit' }} className='overflow-hidden' collapseOnSelect expand="lg" bg='dark' variant='dark'>
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
             <Navbar.Collapse id="responsive-navbar-nav">
                 <Nav className="mr-auto">

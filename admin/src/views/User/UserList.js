@@ -9,7 +9,7 @@ function UserList() {
 
     const [user, setUser] = useState([]);
     const [, setStatus] = useState('')
-
+    console.log(user);
     useEffect(() => {
         handleUsers();
     }, [])

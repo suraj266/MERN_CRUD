@@ -14,12 +14,13 @@ const login = async (email, pass, navigate) => {
         console.log(data);
         if (data.status === true) {
             localStorage.setItem('token', data.token);
-            window.location.reload();
+            // window.location.reload();
             navigate('/')
         } else {
             notifyError({
                 Message: `${data.Error}`
             })
+            handleLogOut(navigate);
         }
     } else {
         notifyError({

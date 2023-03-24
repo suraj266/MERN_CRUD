@@ -49,15 +49,17 @@
 }
 
 .sidebar-hover {
-  color: '#FE5931';
+  color: #a8e3ea !important;
   width: 13em;
 }
 
 .sidebar-hover:hover {
   /* border: 1px solid #FE5931; */
-  background-color: #FE5931;
+  background-color: #ffffff;
+  color: #18BAD1 !important;
 }
 
 .active {
-  background-color: #FE5931;
+  background-color: #ffffff;
+  color: #18BAD1 !important;
 }

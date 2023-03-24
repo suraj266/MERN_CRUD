@@ -12,15 +12,17 @@ function Login(props) {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [open, setOpen] = useState()
+    const [open, setOpen] = useState(false)
     const [forgot, setForgot] = React.useState(false);
 
     const handleLogin = () => {
         login(email, password, navigate);
+        props.setLoginOpen(false)
         setOpen(false)
     }
 
     const handleForgot = () => {
+        props.setLoginOpen(false)
         setOpen(false)
         setForgot(true)
     }
@@ -55,7 +57,7 @@ function Login(props) {
 
     return (<>
         <MyVerticallyCenteredModal
-            show={open === false ? open : props.modalShow}
+            show={props.modalShow === true ? props.modalShow : open}
             onHide={props.onHide}
             heading={'Login'}
             body={Body}

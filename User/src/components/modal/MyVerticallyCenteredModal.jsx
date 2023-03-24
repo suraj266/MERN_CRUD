@@ -20,23 +20,4 @@ function MyVerticallyCenteredModal(props) {
     );
 }
 
-////////////////////// use this to include modal //////////////////////
-
-// const [loginOpen, setLoginOpen] = React.useState(false);
-
-{/* <MyVerticallyCenteredModal
-show={props.modalShow}
-onHide={props.onHide}
-heading={'Register'}
-body={Body}
-size={props.size}
-/> */}
-
-{/* <Login
-modalShow={loginOpen}
-onHide={() => setLoginOpen(false)}
-/> */}
-
-//////////////////////////////////////////////////////////////////////
-
 export default MyVerticallyCenteredModal;

@@ -40,6 +40,7 @@ function AppBarView() {
       <Login
         modalShow={loginOpen}
         onHide={() => setLoginOpen(false)}
+        setLoginOpen={setLoginOpen}
       />
 
       <Register
@@ -53,8 +54,6 @@ function AppBarView() {
         onHide={() => setOpenMyProfile(false)}
         size={'lg'}
       />
-
-
     </>
   );
 }

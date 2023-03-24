@@ -35,21 +35,21 @@ module.exports.Register = async (req, res) => {
         if (!error) {
             const checkUser = await User.findOne({ email: value.email })
             if (checkUser) {
-                res.status(409).json({ status: false, Error: `User Already Exist` });
+                await res.status(409).json({ status: false, Error: `User Already Exist` });
             }
             const user = new User(value);
             await user.save();
 
             Mailing(value.email); // Sending mail
 
-            res.status(201).json({ status: true, Message: `User Registered Successfully` });
+            await res.status(201).json({ status: true, Message: `User Registered Successfully` });
 
         } else {
             console.log("joi error : ", error);
-            res.status(400).json({ status: false, Error: `ELSE : ${error}` })
+            await res.status(400).json({ status: false, Error: `ELSE : ${error}` })
         }
     } catch (err) {
-        res.status(400).json({ status: false, Error: `Catch : ${err}` })
+        await res.status(400).json({ status: false, Error: `Catch : ${err}` })
     }
 }
 
