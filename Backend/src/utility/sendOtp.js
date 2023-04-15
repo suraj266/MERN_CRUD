@@ -6,7 +6,7 @@ function sendOtp(to, otp) {
         port: 465,
         auth: {
             user: 'ojhasuraj832@gmail.com',
-            pass: 'kcghuxszxncglvbj'
+            pass: 'vindraofsmnettbi'
         },
         host: 'smtp.gmail.com'
     });

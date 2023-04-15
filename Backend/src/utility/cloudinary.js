@@ -1,6 +1,6 @@
 const cloudinary = require('cloudinary').v2;
 const dotenv = require('dotenv');
-dotenv.config({ path: './config.env' });
+dotenv.config({ path: './.env' });
 
 const uploadImage = async (image) => {
   // Configuration 

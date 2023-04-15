@@ -14,7 +14,6 @@ const login = async (email, pass, navigate) => {
         console.log(data);
         if (data.status === true) {
             localStorage.setItem('token', data.token);
-            // window.location.reload();
             navigate('/')
         } else {
             notifyError({
